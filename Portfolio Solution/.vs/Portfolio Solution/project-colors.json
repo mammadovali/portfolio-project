@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "4de8860b-6548-41b5-8438-4934f0c7205e": {
+      "ProjectGuid": "4de8860b-6548-41b5-8438-4934f0c7205e",
+      "DisplayName": "Portfolio.WebUI",
+      "ColorIndex": 0
+    },
+    "a0a2ecbc-b8a9-4eb4-a335-fe9bff984f50": {
+      "ProjectGuid": "a0a2ecbc-b8a9-4eb4-a335-fe9bff984f50",
+      "DisplayName": "Portfolio.Domain",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 2
+}

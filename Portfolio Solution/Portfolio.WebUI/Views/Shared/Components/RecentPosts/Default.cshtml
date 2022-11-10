@@ -1,0 +1,44 @@
+﻿@model IEnumerable<BlogPost>
+
+<nav id="cd-lateral-nav">
+    <h5 class="tittle">MotiCv</h5>
+    <ul class="cd-navigation">
+        <li><a asp-controller="home" asp-action="index">Index Main</a></li>
+        <li><a asp-controller="home" asp-action="index">About Me</a></li>
+        <li><a asp-controller="home" asp-action="portfolio">Portfolio</a></li>
+        <li><a asp-controller="blog" asp-action="index">Blog</a></li>
+        <li class="item-has-children">
+            @if (@User.Identity.IsAuthenticated)
+            {
+                <p style="padding-left:20px; margin-top: 10px;">My Account</p>
+                <a href="index.html" style="text-transform:unset;">@User.GetPrincipalName()</a>
+                <ul class="sub-menu">
+                    <li><a asp-controller="account" asp-action="logout" >Log out</a></li>
+                </ul>
+            }
+        </li>
+        @if (@User.Identity.IsAuthenticated == false)
+        {
+            <li><a asp-controller="account" asp-action="signin">Sign in</a></li>
+            <li><a asp-controller="account" asp-action="register">Register</a></li>
+        }
+    </ul>
+    <h5 class="tittle">Latest Posts</h5>
+    <ul class="latest-post">
+
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="media">
+                    <div class="media-left">
+                        <a asp-controller="blog" asp-action="details" asp-route-id="@item.Id" asp-route-slug="@item.Slug"><img src="~/uploads/images/@item.ImagePath" alt=""></a>
+                    </div>
+                    <div class="media-body">
+                        <p class="font-crimson font-italic">@item.Title</p>
+                        <span>@item.PublishedDate?.ToString("MMMM d yyyy")</span>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</nav>
