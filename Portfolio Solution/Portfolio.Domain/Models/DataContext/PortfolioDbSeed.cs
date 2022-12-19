@@ -20,7 +20,7 @@ namespace Portfolio.Domain.Models.DataContext
                 var signInManager = scope.ServiceProvider.GetRequiredService<SignInManager<PortfolioUser>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<PortfolioUser>>();
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<PortfolioRole>>();
-                var configuration= scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
                 string superAdminRoleName = configuration["defaultAccount:superAdmin"];
                 string superAdminEmail = configuration["defaultAccount:email"];
@@ -73,8 +73,22 @@ namespace Portfolio.Domain.Models.DataContext
 
             }
 
-
             return app;
+        }
+
+        public static void SeedUserRole(RoleManager<PortfolioRole> roleManager)
+        {
+
+            if (!roleManager.RoleExistsAsync("User").Result)
+            {
+                PortfolioRole role = new PortfolioRole();
+                role.Name = "User";
+
+                IdentityResult roleResult = roleManager.
+
+                CreateAsync(role).Result;
+            }
+
         }
     }
 }

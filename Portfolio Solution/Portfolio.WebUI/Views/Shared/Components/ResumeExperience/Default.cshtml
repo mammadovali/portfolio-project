@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Experience>
+
+
+@foreach(var item in Model){
+<div class="exp">
+    <div class="media-left">
+        <span class="sun">@item.Duration</span>
+    </div>
+    <div class="media-body">
+        <h6>@item.CompanyName</h6>
+        <p>@item.JobTitle</p>
+        <p>@item.Location</p>
+        <p class="margin-top-10 ellipse">
+            @Html.Raw(item.Details)
+        </p>
+    </div>
+</div>
+}

@@ -10,5 +10,7 @@ namespace Portfolio.WebUI.ViewModels.ResumeViewModel
         public ICollection<Experience> Experiences { get; set; }
 
         public ICollection<AcademicBackground> AcademicBackgrounds { get; set; }
+
+        public ICollection<ResumeCategory> ResumeCategories { get; set; }
     }
 }

@@ -47,7 +47,19 @@ namespace Portfolio.Domain.Migrations
                     b.Property<int>("Experince")
                         .HasColumnType("int");
 
+                    b.Property<string>("FacebookLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Fax")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GithubLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InstagramLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LinkedinLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
@@ -66,6 +78,9 @@ namespace Portfolio.Domain.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Website")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("YoutubeLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -154,6 +169,9 @@ namespace Portfolio.Domain.Migrations
                     b.Property<int>("BlogPostId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -170,6 +188,8 @@ namespace Portfolio.Domain.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BlogPostId");
+
+                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("ParentId");
 
@@ -278,59 +298,6 @@ namespace Portfolio.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Experiences");
-                });
-
-            modelBuilder.Entity("Portfolio.Domain.Models.Entities.HardSkill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("HardSkills");
-                });
-
-            modelBuilder.Entity("Portfolio.Domain.Models.Entities.HardSkillCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("HardSkillCategories");
                 });
 
             modelBuilder.Entity("Portfolio.Domain.Models.Entities.Membership.PortfolioRole", b =>
@@ -538,6 +505,59 @@ namespace Portfolio.Domain.Migrations
                     b.ToTable("UserTokens", "Membership");
                 });
 
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectCategoryId");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.ProjectCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectCategories");
+                });
+
             modelBuilder.Entity("Portfolio.Domain.Models.Entities.ResumeBio", b =>
                 {
                     b.Property<int>("Id")
@@ -560,7 +580,7 @@ namespace Portfolio.Domain.Migrations
                     b.ToTable("ResumeBios");
                 });
 
-            modelBuilder.Entity("Portfolio.Domain.Models.Entities.SoftSkill", b =>
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.ResumeCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -574,11 +594,51 @@ namespace Portfolio.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SoftSkills");
+                    b.ToTable("ResumeCategories");
+                });
+
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.ResumeSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ResumeCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SelectedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("View")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResumeCategoryId");
+
+                    b.ToTable("ResumeSkills");
                 });
 
             modelBuilder.Entity("Portfolio.Domain.Models.Entities.BlogPostComment", b =>
@@ -589,24 +649,21 @@ namespace Portfolio.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Portfolio.Domain.Models.Entities.Membership.PortfolioUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Portfolio.Domain.Models.Entities.BlogPostComment", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.Navigation("BlogPost");
 
+                    b.Navigation("CreatedByUser");
+
                     b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("Portfolio.Domain.Models.Entities.HardSkill", b =>
-                {
-                    b.HasOne("Portfolio.Domain.Models.Entities.HardSkillCategory", "Category")
-                        .WithMany("HardSkills")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Portfolio.Domain.Models.Entities.Membership.PortfolioRoleClaim", b =>
@@ -660,6 +717,28 @@ namespace Portfolio.Domain.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.Project", b =>
+                {
+                    b.HasOne("Portfolio.Domain.Models.Entities.ProjectCategory", "ProjectCategory")
+                        .WithMany("Projects")
+                        .HasForeignKey("ProjectCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProjectCategory");
+                });
+
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.ResumeSkill", b =>
+                {
+                    b.HasOne("Portfolio.Domain.Models.Entities.ResumeCategory", "ResumeCategory")
+                        .WithMany("HardSkills")
+                        .HasForeignKey("ResumeCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ResumeCategory");
+                });
+
             modelBuilder.Entity("Portfolio.Domain.Models.Entities.BlogPost", b =>
                 {
                     b.Navigation("Comments");
@@ -670,7 +749,12 @@ namespace Portfolio.Domain.Migrations
                     b.Navigation("Children");
                 });
 
-            modelBuilder.Entity("Portfolio.Domain.Models.Entities.HardSkillCategory", b =>
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.ProjectCategory", b =>
+                {
+                    b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("Portfolio.Domain.Models.Entities.ResumeCategory", b =>
                 {
                     b.Navigation("HardSkills");
                 });

@@ -15,12 +15,14 @@ namespace Portfolio.WebUI.Controllers
         private readonly SignInManager<PortfolioUser> signInManager;
         private readonly UserManager<PortfolioUser> userManager;
         private readonly EmailService emailService;
+        private readonly RoleManager<PortfolioRole> roleManager;
 
-        public AccountController(SignInManager<PortfolioUser> signInManager, UserManager<PortfolioUser> userManager, EmailService emailService)
+        public AccountController(SignInManager<PortfolioUser> signInManager, UserManager<PortfolioUser> userManager, EmailService emailService, RoleManager<PortfolioRole> roleManager)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.emailService = emailService;
+            this.roleManager = roleManager;
         }
 
         [AllowAnonymous]
@@ -37,8 +39,19 @@ namespace Portfolio.WebUI.Controllers
         {
             PortfolioUser foundedUser = null;
 
+            //foundedUser.Email = user.UserName;
+
             if (user.UserName == null || user.Password == null)
             {
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new
+                    {
+                        error = true,
+                        message = "İstifadəçi adınız və ya şifrəniz yanlışdır"
+                    });
+                }
+
                 ViewBag.Message = "İstifadəçi adınız və ya şifrəniz yanlışdır";
                 goto end;
             }
@@ -56,23 +69,54 @@ namespace Portfolio.WebUI.Controllers
                 goto end;
             }
 
-            
-
-
             if (foundedUser == null)
             {
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new
+                    {
+                        error = true,
+                        message = "İstifadəçi adınız və ya şifrəniz yanlışdır"
+                    });
+                }
+
                 ViewBag.Message = "İstifadəçi adınız və ya şifrəniz yanlışdır";
+                goto end;
+            }
+
+
+            if (foundedUser.EmailConfirmed == false)
+            {
+                ViewBag.Message = "Zəhmət olmasa emailinizə gələn təsdiq linkindən hesabınızı doğrulayın";
                 goto end;
             }
 
             var signInResult = await signInManager.PasswordSignInAsync(foundedUser, user.Password, true, true);
 
-            
+
 
             if (!signInResult.Succeeded)
             {
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new
+                    {
+                        error = true,
+                        message = "İstifadəçi adınız və ya şifrəniz yanlışdır"
+                    });
+                }
+
                 ViewBag.Message = "İstifadəçi adınız və ya şifrəniz yanlışdır";
                 goto end;
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new
+                {
+                    error = false,
+                    message = "Daxil oldunuz"
+                });
             }
 
             var callbackUrl = Request.Query["ReturnUrl"];
@@ -86,6 +130,8 @@ namespace Portfolio.WebUI.Controllers
         end:
             return View(user);
         }
+
+
 
         [AllowAnonymous]
         [Route("/register.html")]
@@ -125,6 +171,9 @@ namespace Portfolio.WebUI.Controllers
                     {
                         ViewBag.Message = " E-mail' göndərərkən xəta baş verdi, zəhmət olmasa yenidən cəhd edin";
                     }
+
+                    await userManager.AddToRoleAsync(user, "User");
+                    await signInManager.SignInAsync(user, false);
 
                     return RedirectToAction(nameof(Signin));
                 }
@@ -168,7 +217,20 @@ namespace Portfolio.WebUI.Controllers
         {
             await signInManager.SignOutAsync();
 
-            return RedirectToAction("Index","home");
+            return RedirectToAction("Index", "home");
         }
+
+        public async Task CreateRole()
+        {
+            if (!await roleManager.RoleExistsAsync("User"))
+            {
+                var userRole = new PortfolioRole { Name = "User" };
+
+                await roleManager.CreateAsync(userRole);
+            }
+
+        }
+
+
     }
 }

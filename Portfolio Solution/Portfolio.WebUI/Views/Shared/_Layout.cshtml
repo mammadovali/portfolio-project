@@ -12,6 +12,7 @@
     <!-- StyleSheets -->
     <link rel="stylesheet" href="~/assets/css/ionicons.min.css">
     <link rel="stylesheet" href="~/assets/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="~/libs/toastr.js/toastr.min.css" />
     <link rel="stylesheet" href="~/assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/assets/css/main.css">
     <link rel="stylesheet" href="~/assets/css/style.css">
@@ -39,7 +40,7 @@
     <!-- Page Wrapper -->
     <div id="wrap">
 
-            @await Component.InvokeAsync("RecentPosts")
+        @await Component.InvokeAsync("RecentPosts")
 
 
         <!-- End Header -->
@@ -62,7 +63,6 @@
 
                                     <!-- Professional Details -->
                                     <h5 class="tittle">Professional Details</h5>
-                                    <img src="~/assets/images/avatar.jpg" class="img-responsive" alt="">
 
                                     @await Component.InvokeAsync("About")
 
@@ -71,24 +71,26 @@
                                     <div class="attach bor-btm padding-25">
                                         <ul>
                                             <li>
-                                                <p><img src="~/assets/images/pdf-icon.jpg" alt=""> Curriculum-Vitae.pdf <a href="#."><i class="fa fa-cloud-download"></i></a> <a href="#."><i class="fa fa-eye"></i></a></p>
+                                                <form asp-controller="Home" asp-action="Pdf">
+                                                    <p>
+                                                        <img src="~/assets/images/pdf-icon.jpg" alt="" />
+                                                        Curriculum-Vitae.pdf
+                                                        @*<form method="post" asp-controller="Home" asp-action="Export">
+                                                            <button formmethod="post" asp-controller="Home" asp-action="Export" type="submit">
+                                                            <i class="fa fa-cloud-download"></i>
+                                                            </button>
+                                                            </form>*@
+                                                        <button asp-controller="Home" asp-action="Pdf" type="submit"><i class="fa fa-eye"></i></button>
+
+
+                                                    </p>
+                                                </form>
                                             </li>
-                                            <li>
-                                                <p><img src="~/assets/images/word-icon.jpg" alt=""> COE.docx <a href="#."><i class="fa fa-cloud-download"></i></a> <a href="#."><i class="fa fa-eye"></i></a></p>
-                                            </li>
+
                                         </ul>
                                     </div>
 
 
-                                    <!-- Social Profiles -->
-                                    <h5 class="tittle">Social Profiles</h5>
-                                    <div class="social-icon bor-btm padding-25">
-                                        <ul>
-                                            <li> <a href="#."> <i class="fa fa-facebook"></i></a> </li>
-                                            <li> <a href="#."> <i class="fa fa-google"></i></a> </li>
-                                            <li> <a href="https://www.linkedin.com/in/ali-mammadov-686023207/"> <i class="fa fa-linkedin"></i></a> </li>
-                                        </ul>
-                                    </div>
 
 
                                 </div>
@@ -129,11 +131,85 @@
     <script src="~/assets/js/vendors/bootstrap.min.js"></script>
     <script src="~/assets/js/vendors/owl.carousel.min.js"></script>
     <script src="~/assets/js/vendors/jquery.isotope.min.js"></script>
+    <script src="~/libs/toastr.js/toastr.min.js"></script>
+    <script src="~/libs/toastr.js/toastr.customize.js"></script>
     <script src="~/assets/js/main.js"></script>
 
     <!-- Begin Map Script-->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="~/assets/js/vendors/map.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                statusCode: {
+                    401: function() {
+                        $('#modalLoginForm').modal({
+                            backdrop: 'static',
+                            keyboard: true
+                        }).modal('show');
+                    }
+                }
+            });
+
+
+            $('#modalLoginForm').submit(function(e) {
+                e.preventDefault();
+
+                var formData = new FormData(e.currentTarget);
+
+                $.ajax({
+                    url: '@Url.Action("Signin", "Account", values: new{area=""})',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if(response.error == false){
+                             $('#modalLoginForm').modal('hide');
+                             toastr.success(response.message, "Uğur!");
+                        }
+                        else
+                        {
+                            toastr.error(response.message, "Xəta");
+                        }
+
+                    }
+                });
+            });
+        })
+    </script>
+
+    <form method="post" class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    <div class="md-form mb-5">
+                        <i class="fas fa-envelope prefix grey-text"></i>
+                        <input type="email" id="defaultForm-email" name="UserName" class="form-control validate">
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+                    </div>
+
+                    <div class="md-form mb-4">
+                        <i class="fas fa-lock prefix grey-text"></i>
+                        <input type="password" name="Password" id="defaultForm-pass" class="form-control validate">
+                        <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                    </div>
+
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button class="btn btn-default">Login</button>
+                </div>
+            </div>
+        </div>
+    </form>
 
 
     @RenderSection("addjs", required:false)

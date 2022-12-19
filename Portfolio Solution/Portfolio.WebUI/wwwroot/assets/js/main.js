@@ -5,6 +5,8 @@ jQuery(document).ready(function ($) {
     /*-----------------------------------------------------------------------------------*/
     $('#Container').mixItUp();
 
+    
+
     var pathname = location.pathname
 
     console.log(pathname)

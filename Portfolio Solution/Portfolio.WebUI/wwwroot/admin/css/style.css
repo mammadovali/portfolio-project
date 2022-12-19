@@ -24149,3 +24149,7 @@ td.operations {
     min-width: 100px;
     max-width: 120px;
 }
+
+.table-buttons {
+    max-width: 207px;
+}

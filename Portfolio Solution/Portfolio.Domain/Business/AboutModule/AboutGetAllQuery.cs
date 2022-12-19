@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 namespace Portfolio.Domain.Business.AboutModule
 {
 
-    public class ContactDetailGetAllQuery : IRequest<List<About>>
+    public class AboutGetAllQuery : IRequest<List<About>>
     {
-        public class AboutGetAllQueryHandler : IRequestHandler<ContactDetailGetAllQuery, List<About>>
+        public class AboutGetAllQueryHandler : IRequestHandler<AboutGetAllQuery, List<About>>
         {
             private readonly PortfolioDbContext db;
 
@@ -22,7 +22,7 @@ namespace Portfolio.Domain.Business.AboutModule
             {
                 this.db = db;
             }
-            public async Task<List<About>> Handle(ContactDetailGetAllQuery request, CancellationToken cancellationToken)
+            public async Task<List<About>> Handle(AboutGetAllQuery request, CancellationToken cancellationToken)
             {
                 var data = await db.Abouts
                 .Where(bp => bp.DeletedDate == null)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using Portfolio.Domain.Models.Entities;
 namespace Portfolio.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "sa")]
     public class BlogPostsController : Controller
     {
         private readonly PortfolioDbContext db;
@@ -27,11 +29,14 @@ namespace Portfolio.WebUI.Areas.Admin.Controllers
         // GET: Admin/BlogPosts
         public async Task<IActionResult> Index(BlogPostGetAllQuery query)
         {
-            var data = await db.BlogPosts
-                .Where(bp => bp.DeletedDate == null)
-                .ToListAsync();
+            var response = await mediator.Send(query);
 
-            return View(data);
+            if (response == null)
+            {
+                return NotFound();
+            }
+
+            return View(response);
         }
 
         // GET: Admin/BlogPosts/Details/5
@@ -223,6 +228,50 @@ namespace Portfolio.WebUI.Areas.Admin.Controllers
             }
 
             var response = await mediator.Send(command);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> GetComments(BlogPostGetCommentsQuery query)
+        {
+            var response = await mediator.Send(query);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
+
+            return View(response);
+        }
+
+        public async Task<IActionResult> CommentDetails(BlogPostGetSingleCommentQuery query)
+        {
+            var response = await mediator.Send(query);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
+
+            return View(response);
+        }
+
+        [HttpPost, ActionName("CommentDelete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CommentDeleteConfirmed(int id, BlogPostCommentRemoveCommand command)
+        {
+            if (id != command.Id)
+            {
+                return NotFound();
+            }
+
+            var response = await mediator.Send(command);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
+
+
             return RedirectToAction(nameof(Index));
         }
 

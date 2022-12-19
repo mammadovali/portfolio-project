@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Portfolio.Domain.Business.AboutModule;
 using Portfolio.Domain.Models.DataContext;
-using Portfolio.Domain.Models.Entities;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Portfolio.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "sa")]
     public class AboutsController : Controller
     {
         private readonly PortfolioDbContext _context;
@@ -25,9 +22,10 @@ namespace Portfolio.WebUI.Areas.Admin.Controllers
         }
 
         // GET: Admin/Abouts
-        public async Task<IActionResult> Index([FromRoute] ContactDetailGetAllQuery query)
+        public async Task<IActionResult> Index([FromRoute] AboutGetAllQuery query)
         {
             var response = await mediator.Send(query);
+
             return View(response);
         }
 

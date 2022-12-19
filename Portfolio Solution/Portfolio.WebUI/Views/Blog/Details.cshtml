@@ -2,6 +2,18 @@
 
 @{
     ViewData["Title"] = "Details";
+
+    IEnumerable<BlogPostComment> GetComments(BlogPostComment parent)
+    {
+        if (parent.ParentId != null)
+            yield return parent;
+
+        foreach (var item in parent.Children.SelectMany(c => GetComments(c)))
+        {
+            yield return item;
+        }
+
+    }
 }
 
 <div role="tabpanel" class="tab-pane fade active in" id="blog">
@@ -21,10 +33,7 @@
             <!-- BLOG DETAIL -->
             <h4 class="font-normal">@Model.Title</h4>
             <ul class="post-info">
-                <li> <i class="fa fa-comments-o"></i>97 </li>
-                <li> <i class="fa fa-eye"></i>565 </li>
-                <li> <i class="fa fa-bookmark-o"></i>Photography </li>
-                <li>  </li>
+                <li> <i class="fa fa-comments-o"></i>@Model.Comments.Count</li>
             </ul>
 
             @Html.Raw(@Model.Body)
@@ -41,48 +50,44 @@
 
                 <!-- Main Heading -->
                 <div class="heading-side-bar margin-bottom-50 margin-top-100">
-                    <h4>Comment (37)</h4>
+                    <h4>Comment (@Model.Comments.Count)</h4>
                 </div>
                 <ul>
-
                     <!-- Comments -->
-                    <li class="margin-bottom-30">
-                        <div class="media">
-                            <div class="media-left">
-                                <div class="avatar"><img src="images/avatar-1.jpg" alt=""></div>
-                            </div>
-                            <div class="media-body">
-                                <div class="a-com">
-                                    <span class="a-name text-color-primary">JAMMIE LANDING </span><span class="date">24.03.2015 at 10:21</span>
-                                    <p class="margin-top-20">
-                                        “Quando feugait duo ei, te erant corpora interpretaris eos. Illud accommodare vituperatoribus an mea. Erat mazim animal
-                                        at nam, eam te doctus evertitur, sed decore ornatus”
-                                    </p>
-                                    <a href="#." class="text-right"> REPLAY <i class="fa fa-reply"></i></a>
+                    @foreach (var comment in Model.Comments.Where(c => c.ParentId == null))
+                    {
+                        <li class="margin-bottom-30 comment" id="c-@comment.Id" data-comment-id="@comment.Id">
+                            <div class="media">
+                                <div class="media-body">
+                                    <div class="a-com">
+                                        <span class="a-name text-color-primary">@($"{comment.CreatedByUser?.Name} {comment.CreatedByUser?.Surname}")</span><span class="date">@comment.CreatedDate.ToString("dd.MM.yyyy HH:mm").</span>
+                                        <p class="margin-top-20">
+                                            @comment.Text
+                                        </p>
+                                        <a class="text-right btn-comment-reply"> REPLAY <i class="fa fa-reply"></i></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
+                        </li>
 
-                    <!-- Comments Replay -->
-                    <li class="com-reply">
-                        <div class="media">
-                            <div class="media-left">
-                                <div class="avatar"><img src="images/avatar-2.jpg" alt=""></div>
-                            </div>
-                            <div class="media-body">
-                                <div class="a-com">
-                                    <span class="a-name ">JAMMIE LANDING </span><span class="date">24.03.2015 at 10:21</span>
-                                    <p class="margin-top-20">
-                                        “Quando feugait duo ei, te erant corpora interpretaris eos. Illud accommodare vituperatoribus an mea. Erat mazim animal
-                                        at nam, eam te doctus evertitur, sed decore ornatus”
-                                    </p>
-                                    <a href="#." class="text-right"> REPLAY <i class="fa fa-reply"></i></a>
+                        <!-- Comments Replay -->
+                        @foreach (var subComment in GetComments(comment))
+                        {
+                            <li class="margin-bottom-30 comment-sub comment" id="c-@subComment.Id" data-comment-id="@subComment.Id">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <div class="a-com">
+                                            <span class="a-name text-color-primary">@($"{subComment.CreatedByUser?.Name} {subComment.CreatedByUser?.Surname}")</span><span class="date">@subComment.CreatedDate.ToString("dd.MM.yyyy HH:mm").</span>
+                                            <p class="margin-top-20">
+                                                @subComment.Text
+                                            </p>
+                                            <a class="text-right btn-comment-reply"> REPLAY <i class="fa fa-reply"></i></a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="text-center more-comments"><a href="#.">MORE COMMENT <i class="fa fa-angle-down"></i></a></li>
+                            </li>
+                        }
+                    }
                 </ul>
 
                 <!-- Comments Form -->
@@ -91,36 +96,25 @@
                     <div class="heading-side-bar margin-bottom-50 margin-top-80">
                         <h4>Post to Reply</h4>
                     </div>
-                    <form>
+                    <form method="post" id="replyForm">
+                        <div id="replyToComment"></div>
+                        <input type="hidden" name="postId" value="@Model.Id" />
                         <ul class="row">
-                            <li class="col-sm-4">
-                                <label>
-                                    *NAME
-                                    <input class="form-control" type="text" placeholder="">
-                                </label>
-                            </li>
-                            <li class="col-sm-4">
-                                <label>
-                                    *EMAIL ADDRESS
-                                    <input class="form-control" type="text" placeholder="">
-                                </label>
-                            </li>
-                            <li class="col-sm-4">
-                                <label>
-                                    WEBSITE
-                                    <input class="form-control" type="text" placeholder="">
-                                </label>
+                            <li class="col-sm-12">
+                                <textarea placeholder="YOUR MESSAGE"
+                                          style="resize: none"
+                                          id="comment-text"
+                                          name="comment"></textarea>
                             </li>
                             <li class="col-sm-12">
-                                <label>
-                                    SUBJECT
-                                    <input class="form-control" type="text" placeholder="">
-                                </label>
-                            </li>
-                            <li class="col-sm-12">
-                                <textarea placeholder="YOUR MESSAGE"></textarea>
-                            </li>
-                            <li class="col-sm-12">
+                                @*@if (User.Identity.IsAuthenticated)
+                                {
+                                    <button type="submit" class="btn btn-dark">POST COMMENT </button>
+                                }
+                                else
+                                {
+                                    <a asp-action="Signin" asp-controller="account" class="btn btn-dark">Sign in to comment on post</a>
+                                }*@
                                 <button type="submit" class="btn btn-dark">POST COMMENT </button>
                             </li>
                         </ul>
@@ -133,5 +127,67 @@
 </div>
 
 
+@section addjs{
+<script>
+    $(document).ready(function(){
+        $(".btn-comment-reply").click(function(e){
+            e.preventDefault();
+
+            $("#replyToComment").html("<a href='javascript:removeSelectedReply()' class='remove-selected-comment' >&times</a>").append($(e.currentTarget).closest(".comment").clone());
+        })
+
+        $("#replyForm").submit(function(e) {
+            e.preventDefault();
+
+            let formData = new FormData(e.currentTarget);
+
+            let toCommentId = $(`#replyToComment li.comment`).data("comment-id");
+
+
+            //console.log("commentId",toCommentId);
+
+            if(toCommentId != undefined){
+                formData.set("commentId", toCommentId);
+            }
+
+
+            $.ajax({
+                url: `@Url.Action("PostComment", "Blog")`,
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function(res){
+                    //console.log(res);
+                },
+                error: function(res){
+
+                    if(res.statusText == "parsererror"){
+                        if(toCommentId != undefined){
+                           $(res.responseText).insertAfter($(`#c-${toCommentId}`));
+
+                           $("#replyToComment").html("");
+                           e.currentTarget.reset();
+                           $("#comment-text").val("");
+                        }
+                        else
+                        {
+                            $("div.comments ul").append($(res.responseText))
+                            $("#comment-text").val("");
+                        }
+                    }
+
+                    //console.warn(res);
+                }
+            });
+        })
+    })
+
+    function removeSelectedReply(el) {
+        $("#replyToComment").html("");
+    }
+</script>
+}
 
 

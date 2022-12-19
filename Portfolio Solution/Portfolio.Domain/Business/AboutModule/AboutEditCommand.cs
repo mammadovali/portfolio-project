@@ -23,6 +23,11 @@ namespace Portfolio.Domain.Business.AboutModule
         public string Website { get; set; }
         public string ShortDescription { get; set; }
         public string LongDescription { get; set; }
+        public string FacebookLink { get; set; }
+        public string GithubLink { get; set; }
+        public string LinkedinLink { get; set; }
+        public string InstagramLink { get; set; }
+        public string YoutubeLink { get; set; }
 
 
 
@@ -57,6 +62,11 @@ namespace Portfolio.Domain.Business.AboutModule
                 data.Website = request.Website;
                 data.ShortDescription = request.ShortDescription;
                 data.LongDescription = request.LongDescription;
+                data.FacebookLink = request.FacebookLink;
+                data.GithubLink = request.GithubLink;
+                data.LinkedinLink = request.LinkedinLink;
+                data.InstagramLink = request.InstagramLink;
+                data.YoutubeLink = request.YoutubeLink;
 
 
                 await db.SaveChangesAsync(cancellationToken);

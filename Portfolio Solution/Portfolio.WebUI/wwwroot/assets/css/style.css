@@ -590,6 +590,11 @@ h5.tittle {
     font-size: 13px;
     display: inline-block;
     border: 1px solid #e6e6e6;
+    margin-bottom: 8px;
+}
+
+.ethical {
+    display: inline;
 }
 
     .ethical a:hover {
@@ -4333,3 +4338,33 @@ input[Name].novalidated, textarea[Name].novalidated {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+.comment-sub {
+    margin-left: 30px !important;
+}
+
+.a-name {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.btn-comment-reply {
+    cursor: pointer;
+}
+
+#replyToComment {
+    position: relative;
+    padding: 20px 0;
+}
+
+    #replyToComment > li {
+        margin: 0 !important;
+    }
+
+    #replyToComment .remove-selected-comment {
+        color: red;
+        position: absolute;
+        font-size: 5.2rem;
+        left: 95%;
+        top: 10px;
+    }

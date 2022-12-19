@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace Portfolio.Domain.Business.ResumeBioModule
 {
-    public class ResumeBioSingleQuery : IRequest<ResumeBio>
+    public class ResumeBioGetSingleQuery : IRequest<ResumeBio>
     {
         public int Id { get; set; }
-        public class ResumeBioSingleQueryHandler : IRequestHandler<ResumeBioSingleQuery, ResumeBio>
+        public class ResumeBioSingleQueryHandler : IRequestHandler<ResumeBioGetSingleQuery, ResumeBio>
         {
             private readonly PortfolioDbContext db;
 
@@ -23,9 +23,9 @@ namespace Portfolio.Domain.Business.ResumeBioModule
                 this.db = db;
             }
 
-            public async Task<ResumeBio> Handle(ResumeBioSingleQuery request, CancellationToken cancellationToken)
+            public async Task<ResumeBio> Handle(ResumeBioGetSingleQuery request, CancellationToken cancellationToken)
             {
-                var data = await db.ResumeBios.FirstOrDefaultAsync(p=>p.Id == request.Id);
+                var data = await db.ResumeBios.FirstOrDefaultAsync(p=>p.Id == request.Id && p.DeletedDate == null);
                     
                 return data;
             }

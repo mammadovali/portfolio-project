@@ -1,4 +1,5 @@
 ﻿using Portfolio.Domain.AppCode.Infrastructure;
+using Portfolio.Domain.Models.Entities.Membership;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,6 +18,10 @@ namespace Portfolio.Domain.Models.Entities
         public virtual BlogPost BlogPost { get; set; }
 
         public virtual BlogPostComment Parent { get; set; }
+
+        public PortfolioUser CreatedByUser { get; set; }
+
+        public int CreatedByUserId { get; set; }
 
         public virtual ICollection<BlogPostComment> Children { get; set; }
     }

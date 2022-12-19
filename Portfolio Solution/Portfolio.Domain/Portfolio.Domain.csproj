@@ -5,9 +5,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Business\ContactDetailsModule\**" />
-	  <EmbeddedResource Remove="Business\ContactDetailsModule\**" />
-	  <None Remove="Business\ContactDetailsModule\**" />
+		<Compile Remove="Business\ContactDetailsModule\**" />
+		<EmbeddedResource Remove="Business\ContactDetailsModule\**" />
+		<None Remove="Business\ContactDetailsModule\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,6 +31,7 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.17" />
+		<PackageReference Include="itextsharp.xmlworker" Version="5.5.13.3" />
 	</ItemGroup>
 
 

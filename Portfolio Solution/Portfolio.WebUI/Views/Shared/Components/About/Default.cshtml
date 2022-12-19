@@ -59,3 +59,39 @@
         </li>
     }
 </ul>
+
+
+<!-- Social Profiles -->
+<h5 class="tittle">Social Profiles</h5>
+<div class="social-icon bor-btm padding-25">
+    <ul>
+        @foreach (var item in Model)
+        {
+            if (!string.IsNullOrWhiteSpace(item.FacebookLink))
+            {
+                <li> <a target="_blank" href="@item.FacebookLink"> <i class="fa fa-facebook"></i></a> </li>
+            }
+
+            if (!string.IsNullOrWhiteSpace(item.GithubLink))
+            {
+                <li> <a target="_blank" href="@item.GithubLink"> <i class="fa fa-github"></i></a> </li>
+            }
+
+            if (!string.IsNullOrWhiteSpace(item.YoutubeLink))
+            {
+                <li> <a target="_blank" href="@item.YoutubeLink"><i class="fa fa-youtube"></i></a> </li>
+            }
+
+            if (!string.IsNullOrWhiteSpace(item.InstagramLink))
+            {
+                 <li> <a target="_blank" href="@item.InstagramLink"> <i class="fa fa-instagram"></i></a> </li>
+            }
+
+            if (!string.IsNullOrWhiteSpace(item.LinkedinLink))
+            {
+                <li> <a target="_blank" href="@item.LinkedinLink"> <i class="fa fa-linkedin"></i></a> </li>
+            }
+        }
+        
+    </ul>
+</div>

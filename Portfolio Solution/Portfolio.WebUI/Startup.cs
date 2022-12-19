@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Portfolio.WebUI.Models.AppCode.Providers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Portfolio.WebUI
 {
@@ -30,7 +31,8 @@ namespace Portfolio.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews(
-                cfg => {
+                cfg =>
+                {
 
                     var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
@@ -64,7 +66,7 @@ namespace Portfolio.WebUI
             services.ConfigureApplicationCookie(cfg =>
             {
                 cfg.LoginPath = "/signin.html";
-                cfg.AccessDeniedPath = "/accesdenied.html";
+                cfg.AccessDeniedPath = "/notfound.html";
 
                 cfg.Cookie.Name = "portfolio";
                 cfg.Cookie.HttpOnly = true;
@@ -79,7 +81,6 @@ namespace Portfolio.WebUI
 
 
 
-
             services.AddRouting(cfg =>
             {
                 cfg.LowercaseUrls = true;
@@ -91,7 +92,11 @@ namespace Portfolio.WebUI
                 configuration.GetSection("emailAccount").Bind(cfg);
             });
             services.AddSingleton<EmailService>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
             services.AddScoped<IClaimsTransformation, AppClaimProvider>();
+
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Portfolio."));
 
@@ -100,7 +105,7 @@ namespace Portfolio.WebUI
 
 
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<PortfolioRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -110,6 +115,7 @@ namespace Portfolio.WebUI
             app.UseRouting();
             app.UseStaticFiles();
             app.SeedMembership();
+            PortfolioDbSeed.SeedUserRole(roleManager);
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -119,15 +125,14 @@ namespace Portfolio.WebUI
                 cfg.MapAreaControllerRoute("defaultAdmin", "admin", "admin/{controller=dashboard}/{action=index}/{id?}");
 
 
-
                 cfg.MapControllerRoute(
-                name: "default-accesdenied",
-                pattern: "accesdenied.html",
+                name: "default-accessdenied",
+                pattern: "accessdenied.html",
                 defaults: new
                 {
                     area = "",
                     controller = "account",
-                    action = "accesdenied"
+                    action = "accessdenied"
                 });
 
 

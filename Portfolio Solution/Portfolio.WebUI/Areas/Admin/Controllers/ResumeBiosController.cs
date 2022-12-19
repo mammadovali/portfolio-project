@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BigOn.Domain.Business.ResumeBioModule;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using Portfolio.Domain.Models.Entities;
 namespace Portfolio.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "sa")]
     public class ResumeBiosController : Controller
     {
         private readonly PortfolioDbContext db;
@@ -39,7 +41,7 @@ namespace Portfolio.WebUI.Areas.Admin.Controllers
         }
 
         // GET: Admin/ResumeBios/Details/5
-        public async Task<IActionResult> Details(ResumeBioSingleQuery query)
+        public async Task<IActionResult> Details(ResumeBioGetSingleQuery query)
         {
             var response = await mediator.Send(query);
 

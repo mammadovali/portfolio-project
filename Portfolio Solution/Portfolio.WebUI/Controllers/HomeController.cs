@@ -1,15 +1,16 @@
-﻿using MediatR;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Domain.AppCode.Extensions;
-using Portfolio.Domain.Business.BlogPostModule;
-using Portfolio.Domain.Business.ExperienceModule;
-using Portfolio.Domain.Business.ResumeBioModule;
 using Portfolio.Domain.Models.DataContext;
-using Portfolio.Domain.Models.Entities;
 using Portfolio.WebUI.ViewModels.ContactPostViewModel;
+using Portfolio.WebUI.ViewModels.PortfolioVIewModel;
 using Portfolio.WebUI.ViewModels.ResumeViewModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,24 +34,22 @@ namespace Portfolio.WebUI.Controllers
             return View(response);
         }
 
-        public async Task<IActionResult> Resume()
-        {
-            var resumeBio = await db.ResumeBios.FirstOrDefaultAsync(rb => rb.DeletedDate == null);
-            var experiences = await db.Experiences.Where(e => e.DeletedDate == null).ToListAsync();
-            var academicBackgrounds = await db.AcademicBackgrounds.Where(ab => ab.DeletedDate == null).ToListAsync();
-
-            
-            return View(new ResumeViewModel
-            {
-                ResumeBio = resumeBio,
-                Experiences = experiences,
-                AcademicBackgrounds = academicBackgrounds
-            });
-        }
-
-        public IActionResult Portfolio()
+        public IActionResult Resume()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Portfolio(PortfolioViewModel model)
+        {
+            var projectCategories = await db.ProjectCategories.Where(pc => pc.DeletedDate == null).ToListAsync();
+
+            var projects = await db.Projects.Where(c => c.DeletedDate == null).ToListAsync();
+
+            return View(new PortfolioViewModel
+            {
+                ProjectCategories = projectCategories,
+                Projects = projects
+            });
         }
 
         public IActionResult Contact()
@@ -90,6 +89,31 @@ namespace Portfolio.WebUI.Controllers
             return Json(responseError);
 
 
+        }
+
+        public IActionResult Pdf()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Export(string GridHtml)
+        {
+
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                StringReader sr = new StringReader(GridHtml);
+                Document pdfDocument = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
+
+                PdfWriter writer = PdfWriter.GetInstance(pdfDocument, stream);
+
+                pdfDocument.Open();
+
+                XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDocument, sr);
+
+                pdfDocument.Close();
+                return File(stream.ToArray(), "application/pdf", "Grid.pdf");
+            }
         }
     }
 }

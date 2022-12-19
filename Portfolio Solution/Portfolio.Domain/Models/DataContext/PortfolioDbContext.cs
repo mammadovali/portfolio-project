@@ -73,16 +73,16 @@ namespace Portfolio.Domain.Models.DataContext
 
         public DbSet<ResumeBio> ResumeBios { get; set; }
 
-        public DbSet<HardSkillCategory> HardSkillCategories { get; set; }
+        public DbSet<ResumeCategory> ResumeCategories { get; set; }
 
-        public DbSet<HardSkill> HardSkills { get; set; }
+        public DbSet<ResumeSkill> ResumeSkills { get; set; }
 
         public DbSet<Experience> Experiences { get; set; }
 
-        public DbSet<SoftSkill> SoftSkills { get; set; }
-
         public DbSet<AcademicBackground> AcademicBackgrounds { get; set; }
 
+        public DbSet<Project> Projects { get; set; }
 
+        public DbSet<ProjectCategory> ProjectCategories { get; set; }
     }
 }
